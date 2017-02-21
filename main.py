@@ -20,7 +20,7 @@ class BlogHandler(webapp2.RequestHandler):
             The user parameter will be a User object.
         """
         # TODO - filter the query so that only posts by the given user
-        query = Post.all().order('-created').filter("author", self.user)
+        query = Post.all().order('-created').filter("author", user)
 
         return query.fetch(limit=limit, offset=offset)
 
@@ -87,6 +87,7 @@ class BlogIndexHandler(BlogHandler):
         else:
             page = 1
 
+        print(username)
         # Fetch posts for all users, or a specific user, depending on request parameters
         if username:
             user = self.get_user_by_name(username)
@@ -227,7 +228,7 @@ class SignupHandler(BlogHandler):
             errors['username_error'] = "A user with that username already exists"
             has_error = True
         elif (username and password and verify and (email is not None) ):
-            
+
             # create new user object and store it in the database
             pw_hash = hashutils.make_pw_hash(username, password)
             user = User(username=username, pw_hash=pw_hash)
